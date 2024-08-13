@@ -1,11 +1,17 @@
 <script lang="ts" setup>
-import { useTheme } from 'vuetify';
+  import {useTheme} from 'vuetify';
+  import router from '@/router'
 
-const theme = useTheme();
+  const theme = useTheme();
 
-function toggleTheme() {
-  theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark';
-}
+  function toggleTheme() {
+    theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark';
+  }
+
+  async function onNavigate(name: string) {
+    await router.push({name})
+  }
+
 </script>
 <template>
   <v-app :theme="theme">
@@ -18,7 +24,12 @@ function toggleTheme() {
 
       <v-navigation-drawer>
         <v-list>
-          <v-list-item title="Navigation drawer"></v-list-item>
+          <v-list-item title="Organizacje" value="tenants"
+            @click="async () => { await router.push({ name: 'tenants' }) }"></v-list-item>
+          <v-list-item title="Logi" value="logs"
+            @click="async () => { await router.push({ name: 'logs' }) }"></v-list-item>
+          <v-list-item title="Użytkownicy" value="users"></v-list-item>
+          <v-list-item title="Kopi zapasowe" value="backups"></v-list-item>
         </v-list>
       </v-navigation-drawer>
 

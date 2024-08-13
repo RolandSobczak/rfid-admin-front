@@ -4,14 +4,29 @@
  * Automatic routes for `./src/pages/*.vue`
  */
 
-// Composables
+// Composabls
 import { createRouter, createWebHistory } from 'vue-router/auto'
 import { setupLayouts } from 'virtual:generated-layouts'
-import { routes } from 'vue-router/auto-routes'
 
+const customRoutes = [
+  {
+    path: '/',
+    name: 'tenants',
+    component: () => import('@/pages/index.vue'), // Lazy-loaded
+    // meta: { requiresAuth: true }, // Example of adding custom meta info
+  },
+  {
+    path: '/logs',
+    name: 'logs',
+    component: () => import('@/pages/logs.vue'), // Lazy-loaded
+    // meta: { requiresAuth: true }, // Example of adding custom meta info
+  },
+];
+
+// Combine the automatically generated routes with the custom ones
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: setupLayouts(routes),
+  routes: setupLayouts(customRoutes),
 })
 
 // Workaround for https://github.com/vitejs/vite/issues/11804

@@ -1,13 +1,41 @@
 <script setup lang="ts">
-import { ref } from "vue";
+  import {ref} from "vue";
+  import api from "@/api";
+  const dialog = ref(false);
+  import {useMutation, useQueryClient, useQuery} from '@tanstack/vue-query'
 
-const dialog = ref(false);
+  const {tenant_id} = defineProps < {tenant_id: number} > ();
+  const queryClient = new useQueryClient();
 
-const { tenant_id } = defineProps<{ tenant_id: number }>();
+  async function deleteTenant(tenant_id: number) {
+    const res = await api.delete(`/tenants/${tenant_id}`);
+    if (res.status === 204) {
+      onClose()
+    }
+  }
 
-function onOpen() {
-  dialog.value = true;
-}
+
+  const result = useQuery({queryKey: ['tenants']})
+  const {error, mutate, reset} = useMutation({
+    mutationFn: deleteTenant,
+    onSuccess: () => {
+      queryClient.setQueryData(['tenants'], (oldData) => oldData.filter(t => t.id !== tenant_id))
+      onClose();
+    },
+  })
+
+  function onDelete() {
+    mutate(tenant_id);
+  }
+
+  function onOpen() {
+    dialog.value = true;
+  }
+
+  function onClose() {
+    dialog.value = false;
+  }
+
 
 </script>
 <template>
@@ -25,7 +53,7 @@ function onOpen() {
 
           <v-btn text="Cofnij" variant="plain" @click="dialog = false"></v-btn>
 
-          <v-btn color="red" text="Usun" @click="dialog = false"></v-btn>
+          <v-btn color="red" text="Usun" @click="onDelete"></v-btn>
         </v-card-actions>
       </v-card>
       <template v-slot:activator="{ props }">
