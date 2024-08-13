@@ -14,7 +14,7 @@
     }
 
     return res.data;
-  }
+  };
 
   const scrollToBottom = () => {
     if (logContainer.value) {
@@ -45,8 +45,16 @@
 <template>
   <v-navigation-drawer permanent>
     <v-list>
-      <v-list-item :title="tenant.name" :value="tenant.name" v-for="tenant in tenants" :key="tenant.name"
+      <v-list-item :value="tenant.name" v-for="tenant in tenants" :key="tenant.name"
         @click="() => { currentLog = tenant.name }">
+        <div>
+          <div class="d-flex align-center justify-space-between">
+            <h3 class="text-h6">{{ tenant.name }}</h3>
+            <div :class="[tenant.ready ? 'bg-green' : 'bg-red', 'text-caption rounded-xl text-end']"
+              style="height: 10px; width: 10px;"></div>
+          </div>
+          <small>{{ tenant.containers[0].image }}</small>
+        </div>
       </v-list-item>
     </v-list>
   </v-navigation-drawer>

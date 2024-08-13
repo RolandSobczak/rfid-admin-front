@@ -24,6 +24,7 @@
         email: t.owner.email,
         created_at: t.created_at,
         type: t.created_at,
+        healthy: t.healthy ? 'tak' : 'nie',
       }));
     }
   });
@@ -33,6 +34,7 @@
     {title: 'Root email', align: 'start', key: 'email'},
     {title: 'Utworzono', align: 'start', key: 'created_at'},
     {title: 'Typ', align: 'start', key: 'type'},
+    {title: 'Zdrowy', align: 'start', key: 'healthy'},
     {title: 'Akcje', align: 'end', key: 'actions'},
   ]);
 
