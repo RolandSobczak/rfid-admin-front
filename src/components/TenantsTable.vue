@@ -16,6 +16,17 @@
 
   const result = useQuery({queryKey: ['tenants'], queryFn: fetchTenantsList})
 
+  function resolveType(tenant_type: string): string {
+    switch (tenant_type) {
+      case "hotel":
+        return "Hotel";
+      case "warehouse":
+        return "Sklep";
+      default:
+        return tenant_type;
+    }
+  }
+
   const tenants = computed(() => {
     if (!result.isPending.value) {
       return result.data.value.map((t) => ({
@@ -23,8 +34,8 @@
         name: t.name,
         email: t.owner.email,
         created_at: t.created_at,
-        type: t.created_at,
-        healthy: t.healthy ? 'tak' : 'nie',
+        type: resolveType(t.type),
+        healthy: t.healthy,
       }));
     }
   });
@@ -60,6 +71,10 @@
           </v-card>
         </v-dialog>
       </v-toolbar>
+    </template>
+    <template v-slot:item.healthy="{ item }">
+      <div :class="[item.healthy ? 'bg-green' : 'bg-red', 'text-caption rounded-xl text-end']"
+        style="height: 10px; width: 10px;"></div>
     </template>
     <template v-slot:item.actions="{ item }">
       <DestroyTenantDialog :tenant_id="item.id" />

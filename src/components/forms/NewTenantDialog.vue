@@ -97,7 +97,7 @@
     if (values.tenant_type === "Hotel") {
       data.tenant.type = "hotel"
     } else if (values.tenant_type === "Sklep") {
-      data.tenant.type = "hotel"
+      data.tenant.type = "warehouse"
     }
 
     if (values.lang === "Polski") {
