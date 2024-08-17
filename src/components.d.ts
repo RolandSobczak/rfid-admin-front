@@ -13,7 +13,6 @@ declare module 'vue' {
     NewTenantDialog: typeof import('./components/forms/NewTenantDialog.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    Tenants: typeof import('./components/tenants.vue')['default']
     TenantsTable: typeof import('./components/TenantsTable.vue')['default']
   }
 }
