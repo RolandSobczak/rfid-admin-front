@@ -7,18 +7,37 @@
 // Composabls
 import { createRouter, createWebHistory } from 'vue-router/auto'
 import { setupLayouts } from 'virtual:generated-layouts'
+import { DefaultLayout, AuthLayout } from '@/layouts'
 
 const customRoutes = [
   {
     path: '/',
     name: 'tenants',
-    component: () => import('@/pages/index.vue'), // Lazy-loaded
+    component: DefaultLayout,
     // meta: { requiresAuth: true }, // Example of adding custom meta info
+    children: [
+      {
+        path: '',
+        name: 'Home',
+        component: () => import('@/pages/index.vue'), // Lazy-loaded
+      },
+      {
+        path: 'logs',
+        name: 'Logs',
+        component: () => import('@/pages/logs.vue'), // Lazy-loaded
+      },
+    ],
   },
   {
-    path: '/logs',
-    name: 'logs',
-    component: () => import('@/pages/logs.vue'), // Lazy-loaded
+    path: '/sign-in',
+    component: AuthLayout,
+    children: [
+      {
+        path: '',
+        name: 'SignIn',
+        component: () => import('@/pages/auth/signin.vue'), // Lazy-loaded
+      },
+    ],
     // meta: { requiresAuth: true }, // Example of adding custom meta info
   },
 ];
@@ -26,7 +45,15 @@ const customRoutes = [
 // Combine the automatically generated routes with the custom ones
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: setupLayouts(customRoutes),
+  routes: customRoutes,
+})
+
+router.beforeEach(async (to, from) => {
+  if (
+    !true && to.name !== 'SignIn'
+  ) {
+    return { name: 'SignIn' }
+  }
 })
 
 // Workaround for https://github.com/vitejs/vite/issues/11804

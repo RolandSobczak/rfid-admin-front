@@ -1,121 +1,110 @@
 <script setup lang="ts">
-  import {ref} from "vue";
-  import api from "@/api";
-  import {useField, useForm} from 'vee-validate'
-  import {useMutation, useQuery, useQueryClient} from '@tanstack/vue-query'
+import { ref } from 'vue'
+import api from '@/api'
+import { useField, useForm } from 'vee-validate'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 
-  const dialog = ref(false);
+const dialog = ref(false)
 
-  function onOpen() {
-    dialog.value = true;
-  }
+function onOpen() {
+  dialog.value = true
+}
 
-  function onClose() {
-    dialog.value = false;
-  }
+function onClose() {
+  dialog.value = false
+}
 
+const { handleSubmit, handleReset } = useForm({
+  validationSchema: {
+    name(value) {
+      if (value?.length >= 2) return true
 
-  const {handleSubmit, handleReset} = useForm({
-    validationSchema: {
-      name(value) {
-        if (value?.length >= 2) return true
-
-        return 'Name needs to be at least 2 characters.'
-      },
-      first_name(value) {
-        if (value?.length >= 2) return true
-
-        return 'First name needs to be at least 2 characters.'
-      },
-      last_name(value) {
-        if (value?.length >= 2) return true
-
-        return 'Last name needs to be at least 2 characters.'
-      },
-      email(value) {
-        if (/^[a-zA-Z0-9.-]+@[a-z.-]+\.[a-z]+$/i.test(value)) return true
-
-        return 'Must be a valid e-mail.'
-      },
-      lang(value) {
-        if (value) return true
-
-        return 'Select an item.'
-      },
-      tenant_type(value) {
-        if (value) return true
-
-        return 'Select an item.'
-      },
+      return 'Name needs to be at least 2 characters.'
     },
-  })
-  const name = useField('name')
-  const first_name = useField('first_name')
-  const last_name = useField('last_name')
-  const email = useField('email')
-  const password = useField('password')
-  const confirm_password = useField('confirm_password')
-  const lang = useField('lang')
-  const tenant_type = useField('tenant_type')
+    first_name(value) {
+      if (value?.length >= 2) return true
 
+      return 'First name needs to be at least 2 characters.'
+    },
+    last_name(value) {
+      if (value?.length >= 2) return true
 
-  const items = ref([
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-  ])
+      return 'Last name needs to be at least 2 characters.'
+    },
+    email(value) {
+      if (/^[a-zA-Z0-9.-]+@[a-z.-]+\.[a-z]+$/i.test(value)) return true
 
-  async function deployTenant(tenant) {
-    const res = await api.post("/tenants", tenant);
-    return res.data;
+      return 'Must be a valid e-mail.'
+    },
+    lang(value) {
+      if (value) return true
+
+      return 'Select an item.'
+    },
+    tenant_type(value) {
+      if (value) return true
+
+      return 'Select an item.'
+    }
+  }
+})
+const name = useField('name')
+const first_name = useField('first_name')
+const last_name = useField('last_name')
+const email = useField('email')
+const password = useField('password')
+const confirm_password = useField('confirm_password')
+const lang = useField('lang')
+const tenant_type = useField('tenant_type')
+
+const items = ref(['Item 1', 'Item 2', 'Item 3', 'Item 4'])
+
+async function deployTenant(tenant) {
+  const res = await api.post('/tenants', tenant)
+  return res.data
+}
+
+const result = useQuery({ queryKey: ['tenants'] })
+const queryClient = useQueryClient()
+const { error, mutate, reset } = useMutation({
+  mutationFn: deployTenant,
+  onSuccess: (newTenant) => {
+    queryClient.setQueryData(['tenants'], (oldData) => {
+      const updatedData = oldData ? [...oldData, newTenant] : [newTenant]
+      return updatedData
+    })
+  }
+})
+
+const submit = handleSubmit(async (values) => {
+  const data = {
+    email: values.email,
+    password: values.password,
+    first_name: values.first_name,
+    last_name: values.last_name,
+    tenant: {
+      name: values.name
+    }
+  }
+  if (values.tenant_type === 'Hotel') {
+    data.tenant.type = 'hotel'
+  } else if (values.tenant_type === 'Sklep') {
+    data.tenant.type = 'warehouse'
   }
 
-  const result = useQuery({queryKey: ['tenants']})
-  const queryClient = useQueryClient();
-  const {error, mutate, reset} = useMutation({
-    mutationFn: deployTenant,
-    onSuccess: (newTenant) => {
-      queryClient.setQueryData(['tenants'], (oldData) => {
-        const updatedData = oldData ? [...oldData, newTenant] : [newTenant];
-        return updatedData;
-      });
-    },
-
-  })
-
-  const submit = handleSubmit(async (values) => {
-    const data = {
-      email: values.email,
-      password: values.password,
-      first_name: values.first_name,
-      last_name: values.last_name,
-      tenant: {
-        name: values.name,
-      }
-    }
-    if (values.tenant_type === "Hotel") {
-      data.tenant.type = "hotel"
-    } else if (values.tenant_type === "Sklep") {
-      data.tenant.type = "warehouse"
-    }
-
-    if (values.lang === "Polski") {
-      data.tenant.lang = "pl-PL"
-    } else if (values.lang === "Angielski") {
-      data.tenant.lang = "en-EN"
-    }
-    mutate(data);
-    onClose();
-  })
-
-
+  if (values.lang === 'Polski') {
+    data.tenant.lang = 'pl-PL'
+  } else if (values.lang === 'Angielski') {
+    data.tenant.lang = 'en-EN'
+  }
+  mutate(data)
+  onClose()
+})
 </script>
 <template>
   <div class="pa-4 text-center">
     <v-dialog v-model="dialog" max-width="600">
       <v-card prepend-icon="mdi-domain" title="Nowa organizacja">
-
         <form @submit.prevent="submit">
           <v-card-text>
             <v-row dense>
@@ -167,13 +156,10 @@
 
             <v-btn color="primary" text="Dodaj" variant="tonal" type="submit"></v-btn>
           </v-card-actions>
-
         </form>
       </v-card>
       <template v-slot:activator="{ props }">
-        <v-btn class="mb-2" color="primary" dark v-bind="props">
-          Dodaj Tenant
-        </v-btn>
+        <v-btn class="mb-2" color="primary" dark v-bind="props"> Dodaj Tenant </v-btn>
       </template>
     </v-dialog>
   </div>
