@@ -1,55 +1,60 @@
 <script setup lang="ts">
-  import {ref, onMounted, computed} from "vue";
-  import api from "@/api";
-  import NewTenantDialog from "@/components/forms/NewTenantDialog.vue"
-  import DestroyTenantDialog from "@/components/forms/DestroyTenantDialog.vue"
-  import {useQuery} from '@tanstack/vue-query';
+import { ref, onMounted, computed } from 'vue'
+import api from '@/api'
+import NewTenantDialog from '@/components/forms/NewTenantDialog.vue'
+import DestroyTenantDialog from '@/components/forms/DestroyTenantDialog.vue'
+import { useQuery } from '@tanstack/vue-query'
+import { useAuthStore } from '@/stores'
 
-  async function fetchTenantsList() {
-    const res = await api.get("/tenants");
-    if (res.status !== 200) {
-      return Promise.reject(new Error('Oh no!'))
-    }
+const auth = useAuthStore()
 
-    return res.data;
+async function fetchTenantsList() {
+  const res = await api.get('/tenants')
+  if (res.status !== 200) {
+    return Promise.reject(new Error('Oh no!'))
   }
 
-  const result = useQuery({queryKey: ['tenants'], queryFn: fetchTenantsList})
+  return res.data
+}
 
-  function resolveType(tenant_type: string): string {
-    switch (tenant_type) {
-      case "hotel":
-        return "Hotel";
-      case "warehouse":
-        return "Sklep";
-      default:
-        return tenant_type;
-    }
+const result = useQuery({
+  queryKey: ['tenants'],
+  queryFn: fetchTenantsList,
+  enabled: auth.isAuthenticated
+})
+
+function resolveType(tenant_type: string): string {
+  switch (tenant_type) {
+    case 'hotel':
+      return 'Hotel'
+    case 'warehouse':
+      return 'Sklep'
+    default:
+      return tenant_type
   }
+}
 
-  const tenants = computed(() => {
-    if (!result.isPending.value) {
-      return result.data.value.map((t) => ({
-        id: t.id,
-        name: t.name,
-        email: t.owner.email,
-        created_at: t.created_at,
-        type: resolveType(t.type),
-        healthy: t.healthy,
-      }));
-    }
-  });
+const tenants = computed(() => {
+  if (!result.isPending.value) {
+    return result.data.value.map((t) => ({
+      id: t.id,
+      name: t.name,
+      email: t.owner.email,
+      created_at: t.created_at,
+      type: resolveType(t.type),
+      healthy: t.healthy
+    }))
+  }
+})
 
-  const headers = ref([
-    {title: 'Name', align: 'start', key: 'name'},
-    {title: 'Root email', align: 'start', key: 'email'},
-    {title: 'Utworzono', align: 'start', key: 'created_at'},
-    {title: 'Typ', align: 'start', key: 'type'},
-    {title: 'Zdrowy', align: 'start', key: 'healthy'},
-    {title: 'Akcje', align: 'end', key: 'actions'},
-  ]);
-
-
+const headers = ref([
+  { title: 'Name', align: 'start', key: 'name' },
+  { title: 'Root email', align: 'start', key: 'email' },
+  { title: 'Utworzono', align: 'start', key: 'created_at' },
+  { title: 'Typ', align: 'start', key: 'type' },
+  { title: 'Zdrowy', align: 'start', key: 'healthy' },
+  { title: 'Akcje', align: 'end', key: 'actions' }
+])
 </script>
 <template>
   <v-data-table :headers="headers" :items="tenants" item-value="name" class="h-auto">
@@ -74,7 +79,7 @@
     </template>
     <template v-slot:item.healthy="{ item }">
       <div :class="[item.healthy ? 'bg-green' : 'bg-red', 'text-caption rounded-xl text-end']"
-        style="height: 10px; width: 10px;"></div>
+        style="height: 10px; width: 10px"></div>
     </template>
     <template v-slot:item.actions="{ item }">
       <DestroyTenantDialog :tenant_id="item.id" />

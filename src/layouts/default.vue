@@ -31,11 +31,11 @@ async function onNavigate(name: string) {
       <v-navigation-drawer>
         <v-list>
           <v-list-item title="Organizacje" value="tenants" @click="async () => {
-              await router.push({ name: 'tenants' })
+              await router.push({ name: 'Home' })
             }
             "></v-list-item>
           <v-list-item title="Logi" value="logs" @click="async () => {
-              await router.push({ name: 'logs' })
+              await router.push({ name: 'Logs' })
             }
             "></v-list-item>
           <v-list-item title="Użytkownicy" value="users"></v-list-item>

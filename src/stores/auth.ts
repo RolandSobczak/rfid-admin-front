@@ -24,6 +24,10 @@ export const useAuthStore = defineStore('currentUser', () => {
     return data.value !== null
   })
 
+  const setUserData = (user) => {
+    data.value = user
+  }
+
   const loadRefreshToken = (): string => {
     let refreshToken = localStorage.getItem(REFRESH_TOKEN_ADDR_KEY)
     if (!refreshToken) {
@@ -41,5 +45,6 @@ export const useAuthStore = defineStore('currentUser', () => {
     setRefreshToken,
     userType,
     loadRefreshToken,
+    setUserData,
   }
 })

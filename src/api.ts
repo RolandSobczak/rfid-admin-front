@@ -24,6 +24,7 @@ export async function fetchNewToken(refreshToken: string) {
   })
   const resJson = await res.json()
   if (res.status == 200) {
+    console.log({ newToken: resJson.token })
     return resJson.token
   } else {
     throw new Error('Invalid token')

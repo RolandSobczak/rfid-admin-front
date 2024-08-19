@@ -32,7 +32,7 @@ const email = useField('email')
 const password = useField('password')
 const rememberMe = useField('rememberMe')
 
-async function singIn(input_email: string, input_password: string, rememberMe: boolean) {
+async function fetchToken(input_email: string, input_password: string) {
   const res = await authAPI.post('/users/token', {
     username: input_email,
     password: input_password
@@ -47,12 +47,26 @@ async function singIn(input_email: string, input_password: string, rememberMe: b
     password.setErrors(['Wymagane konto administratora'])
     throw new Error('Invalid credentials')
   }
-  setAccessToken(res.data.token)
-  auth.setRefreshToken(res.data.refresh_token, rememberMe)
+  return res.data
+}
+
+async function fetchCurrentUser() {
+  const res = await authAPI.get('/users/current-user')
+  if (res.status != 200) {
+    throw new Error('Current user data fetch failed')
+  }
+
+  return res.data
 }
 
 const submit = handleSubmit(async (values) => {
-  await singIn(values.email, values.password, values.rememberMe)
+  const res = await fetchToken(values.email, values.password)
+  setAccessToken(res.token)
+  auth.setRefreshToken(res.refresh_token, values.rememberMe)
+
+  const currentUser = await fetchCurrentUser()
+  auth.setUserData(currentUser)
+
   await router.push({ name: 'Home' })
 })
 </script>
