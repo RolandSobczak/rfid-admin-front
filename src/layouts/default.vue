@@ -39,7 +39,10 @@ async function onNavigate(name: string) {
             }
             "></v-list-item>
           <v-list-item title="Użytkownicy" value="users"></v-list-item>
-          <v-list-item title="Kopi zapasowe" value="backups"></v-list-item>
+          <v-list-item title="Kopie zapasowe" value="backups" @click="async () => {
+              await router.push({ name: 'Backups' })
+            }
+            "></v-list-item>
         </v-list>
       </v-navigation-drawer>
 

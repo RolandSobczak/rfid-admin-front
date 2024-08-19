@@ -3,6 +3,8 @@ import { ref, onMounted, computed } from 'vue'
 import api from '@/api'
 import NewTenantDialog from '@/components/forms/NewTenantDialog.vue'
 import DestroyTenantDialog from '@/components/forms/DestroyTenantDialog.vue'
+import TenantBackup from '@/components/TenantBackup'
+import TenantRestart from '@/components/TenantRestart'
 import { useQuery } from '@tanstack/vue-query'
 import { useAuthStore } from '@/stores'
 
@@ -39,6 +41,7 @@ const tenants = computed(() => {
     return result.data.value.map((t) => ({
       id: t.id,
       name: t.name,
+      slug: t.slug,
       email: t.owner.email,
       created_at: t.created_at,
       type: resolveType(t.type),
@@ -82,7 +85,11 @@ const headers = ref([
         style="height: 10px; width: 10px"></div>
     </template>
     <template v-slot:item.actions="{ item }">
-      <DestroyTenantDialog :tenant_id="item.id" />
+      <div class="d-flex align-center justify-end">
+        <TenantRestart :tenant_id="item.id" />
+        <TenantBackup :tenant-slug="item.slug" :tenant_id="item.id" />
+        <DestroyTenantDialog :tenant_id="item.id" />
+      </div>
     </template>
   </v-data-table>
 </template>

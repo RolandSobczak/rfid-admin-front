@@ -26,6 +26,11 @@ const customRoutes = [
         name: 'Logs',
         component: () => import('@/pages/logs.vue'), // Lazy-loaded
       },
+      {
+        path: 'Backups',
+        name: 'Backups',
+        component: () => import('@/pages/backups.vue'), // Lazy-loaded
+      },
     ],
   },
   {

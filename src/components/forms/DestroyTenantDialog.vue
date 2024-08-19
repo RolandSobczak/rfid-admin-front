@@ -1,45 +1,42 @@
 <script setup lang="ts">
-  import {ref} from "vue";
-  import api from "@/api";
-  const dialog = ref(false);
-  import {useMutation, useQueryClient, useQuery} from '@tanstack/vue-query'
+import { ref } from 'vue'
+import api from '@/api'
+const dialog = ref(false)
+import { useMutation, useQueryClient, useQuery } from '@tanstack/vue-query'
 
-  const {tenant_id} = defineProps < {tenant_id: number} > ();
-  const queryClient = new useQueryClient();
+const { tenant_id } = defineProps<{ tenant_id: number }>()
+const queryClient = new useQueryClient()
 
-  async function deleteTenant(tenant_id: number) {
-    const res = await api.delete(`/tenants/${tenant_id}`);
-    if (res.status === 204) {
-      onClose()
-    }
+async function deleteTenant(tenant_id: number) {
+  const res = await api.delete(`/tenants/${tenant_id}`)
+  if (res.status === 204) {
+    onClose()
   }
+}
 
-
-  const result = useQuery({queryKey: ['tenants']})
-  const {error, mutate, reset} = useMutation({
-    mutationFn: deleteTenant,
-    onSuccess: () => {
-      queryClient.setQueryData(['tenants'], (oldData) => oldData.filter(t => t.id !== tenant_id))
-      onClose();
-    },
-  })
-
-  function onDelete() {
-    mutate(tenant_id);
+const result = useQuery({ queryKey: ['tenants'] })
+const { error, mutate, reset } = useMutation({
+  mutationFn: deleteTenant,
+  onSuccess: () => {
+    queryClient.setQueryData(['tenants'], (oldData) => oldData.filter((t) => t.id !== tenant_id))
+    onClose()
   }
+})
 
-  function onOpen() {
-    dialog.value = true;
-  }
+function onDelete() {
+  mutate(tenant_id)
+}
 
-  function onClose() {
-    dialog.value = false;
-  }
+function onOpen() {
+  dialog.value = true
+}
 
-
+function onClose() {
+  dialog.value = false
+}
 </script>
 <template>
-  <div class="pa-4 text-center">
+  <div class="ps-4">
     <v-dialog v-model="dialog" max-width="600">
       <v-card prepend-icon="mdi-domain" title="Nowa organizacja">
         <v-card-text>
@@ -57,9 +54,7 @@
         </v-card-actions>
       </v-card>
       <template v-slot:activator="{ props }">
-        <v-icon size="small" @click="onOpen">
-          mdi-delete
-        </v-icon>
+        <v-icon size="small" @click="onOpen"> mdi-delete </v-icon>
       </template>
     </v-dialog>
   </div>

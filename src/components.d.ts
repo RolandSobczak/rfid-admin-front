@@ -11,10 +11,13 @@ declare module 'vue' {
     DestroyTenantDialog: typeof import('./components/forms/DestroyTenantDialog.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     NewTenantDialog: typeof import('./components/forms/NewTenantDialog.vue')['default']
+    RestartBackup: typeof import('./components/RestartBackup.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SignInForm: typeof import('./components/forms/SignInForm.vue')['default']
     SignOut: typeof import('./components/SignOut.vue')['default']
+    TenantBackup: typeof import('./components/TenantBackup.vue')['default']
+    TenantRestart: typeof import('./components/TenantRestart.vue')['default']
     TenantsTable: typeof import('./components/TenantsTable.vue')['default']
   }
 }
