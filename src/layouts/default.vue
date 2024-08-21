@@ -43,6 +43,10 @@ async function onNavigate(name: string) {
               await router.push({ name: 'Backups' })
             }
             "></v-list-item>
+          <v-list-item title="Zaplanowane akcje" value="schedulers" @click="async () => {
+              await router.push({ name: 'Schedulers' })
+            }
+            "></v-list-item>
         </v-list>
       </v-navigation-drawer>
 

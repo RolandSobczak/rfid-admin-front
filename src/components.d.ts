@@ -8,12 +8,15 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppFooter: typeof import('./components/AppFooter.vue')['default']
+    DestroySchedulerDialog: typeof import('./components/forms/DestroySchedulerDialog.vue')['default']
     DestroyTenantDialog: typeof import('./components/forms/DestroyTenantDialog.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     NewTenantDialog: typeof import('./components/forms/NewTenantDialog.vue')['default']
     RestartBackup: typeof import('./components/RestartBackup.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SchedulerForm: typeof import('./components/forms/SchedulerForm.vue')['default']
+    SchedulersTable: typeof import('./components/SchedulersTable.vue')['default']
     SignInForm: typeof import('./components/forms/SignInForm.vue')['default']
     SignOut: typeof import('./components/SignOut.vue')['default']
     TenantBackup: typeof import('./components/TenantBackup.vue')['default']

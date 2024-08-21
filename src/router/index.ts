@@ -19,17 +19,22 @@ const customRoutes = [
       {
         path: '',
         name: 'Home',
-        component: () => import('@/pages/index.vue'), // Lazy-loaded
+        component: () => import('@/pages/index.vue'),
       },
       {
         path: 'logs',
         name: 'Logs',
-        component: () => import('@/pages/logs.vue'), // Lazy-loaded
+        component: () => import('@/pages/logs.vue'),
       },
       {
-        path: 'Backups',
+        path: 'backups',
         name: 'Backups',
-        component: () => import('@/pages/backups.vue'), // Lazy-loaded
+        component: () => import('@/pages/backups.vue'),
+      },
+      {
+        path: 'schedulers',
+        name: 'Schedulers',
+        component: () => import('@/pages/schedulers.vue'),
       },
     ],
   },

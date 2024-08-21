@@ -7,11 +7,20 @@
 </template>
 <script lang="ts" setup>
 import { onBeforeMount } from 'vue'
-import { fetchNewToken, setAccessToken } from '@/api'
+import { fetchNewToken, setAccessToken, authAPI } from '@/api'
 import { useAuthStore } from '@/stores'
 import router from '@/router'
 
 const auth = useAuthStore()
+
+async function fetchCurrentUser() {
+  const res = await authAPI.get('/users/current-user')
+  if (res.status != 200) {
+    throw new Error('Current user data fetch failed')
+  }
+
+  return res.data
+}
 
 async function startup() {
   const refreshToken = auth.loadRefreshToken()
@@ -23,7 +32,11 @@ async function startup() {
     const accessToken = await fetchNewToken(refreshToken)
     console.log({ accessToken })
     setAccessToken(accessToken)
-  } catch {
+
+    const currentUser = await fetchCurrentUser()
+    auth.setUserData(currentUser)
+  } catch (e) {
+    console.error(e)
     await router.push({ name: 'SignIn' })
   }
 }
