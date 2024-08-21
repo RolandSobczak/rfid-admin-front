@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import api from '@/api'
 import { useField, useForm } from 'vee-validate'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
 
 const dialog = ref(false)
 
@@ -67,7 +67,6 @@ async function createScheduler(scheduler) {
   return res.data
 }
 
-const result = useQuery({ queryKey: ['tenants'] })
 const queryClient = useQueryClient()
 const { error, mutate, reset } = useMutation({
   mutationFn: createScheduler,

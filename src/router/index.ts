@@ -22,6 +22,11 @@ const customRoutes = [
         component: () => import('@/pages/index.vue'),
       },
       {
+        path: 'users',
+        name: 'Users',
+        component: () => import('@/pages/users.vue'),
+      },
+      {
         path: 'logs',
         name: 'Logs',
         component: () => import('@/pages/logs.vue'),
