@@ -7,6 +7,7 @@ import { useAuthStore } from '@/stores'
 
 const dialog = ref(false)
 const auth = useAuthStore()
+const isLoading = ref(false)
 
 function onOpen() {
   dialog.value = true
@@ -33,21 +34,33 @@ const password = useField('password')
 const rememberMe = useField('rememberMe')
 
 async function fetchToken(input_email: string, input_password: string) {
-  const res = await authAPI.post('/users/token', {
+  const body = JSON.stringify({
     username: input_email,
     password: input_password
   })
-  if (res.status != 200) {
-    email.setErrors(['Nieprawidłowy email lub hasło'])
-    password.setErrors(['Nieprawidłowy email lub hasło'])
+  try {
+    const res = await fetch(import.meta.env.VITE_AUTH_API_URL + '/users/token', {
+      method: 'POST',
+      body,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    if (res.status != 200) {
+      email.setErrors(['Nieprawidłowy email lub hasło'])
+      password.setErrors(['Nieprawidłowy email lub hasło'])
+      throw new Error('Invalid credentials')
+    }
+    const data = await res.json()
+    if (!data.user.is_staffuser) {
+      email.setErrors(['Wymagane konto administratora'])
+      password.setErrors(['Wymagane konto administratora'])
+      throw new Error('Invalid credentials')
+    }
+    return data
+  } catch (e) {
     throw new Error('Invalid credentials')
   }
-  if (!res.data.user.is_staffuser) {
-    email.setErrors(['Wymagane konto administratora'])
-    password.setErrors(['Wymagane konto administratora'])
-    throw new Error('Invalid credentials')
-  }
-  return res.data
 }
 
 async function fetchCurrentUser() {
@@ -60,13 +73,23 @@ async function fetchCurrentUser() {
 }
 
 const submit = handleSubmit(async (values) => {
-  const res = await fetchToken(values.email, values.password)
-  setAccessToken(res.token)
-  auth.setRefreshToken(res.refresh_token, values.rememberMe)
+  isLoading.value = true
+  email.error
+  try {
+    const res = await fetchToken(values.email, values.password)
+    setAccessToken(res.token)
+    auth.setRefreshToken(res.refresh_token, values.rememberMe)
+  } catch (e) {
+    isLoading.value = false
+    console.error(e)
+    throw new Error(e)
+    return
+  }
 
   const currentUser = await fetchCurrentUser()
   auth.setUserData(currentUser)
 
+  isLoading.value = false
   await router.push({ name: 'Home' })
 })
 </script>
@@ -88,7 +111,8 @@ const submit = handleSubmit(async (values) => {
               <v-checkbox label="Zapamiętaj mnie" v-model="rememberMe.value.value"></v-checkbox>
             </v-col>
           </v-row>
-          <v-btn full class="w-100 mt-2" color="primary" text="Zaloguj" variant="tonal" type="submit"></v-btn>
+          <v-btn full class="w-100 mt-2" color="primary" text="Zaloguj" variant="tonal" type="submit"
+            :loading="isLoading"></v-btn>
         </v-card-text>
       </form>
     </v-card>
