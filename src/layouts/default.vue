@@ -6,9 +6,6 @@ import { mdiAccount } from '@mdi/js'
 import SignOut from '@/components/SignOut.vue'
 
 const icons = { mdiAccount }
-onMounted(() => {
-  console.log(mdiAccount)
-})
 
 const theme = useTheme()
 

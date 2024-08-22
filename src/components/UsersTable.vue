@@ -21,8 +21,8 @@ async function fetchUsersList() {
 
 const result = useQuery({
   queryKey: ['users'],
-  queryFn: fetchUsersList,
-  enabled: auth.isAuthenticated
+  queryFn: fetchUsersList
+  // enabled: auth.isAuthenticated
 })
 
 const users = computed(() => {

@@ -19,7 +19,6 @@ function onOpen() {
 }
 
 async function createBackup() {
-  console.log({ tenantSlug })
   const res = await api.post('/backups', { db_name: tenantSlug })
   if (res.status === 200) {
     onClose()

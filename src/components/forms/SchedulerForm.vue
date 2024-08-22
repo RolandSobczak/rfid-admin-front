@@ -85,7 +85,6 @@ const submit = handleSubmit(async (values) => {
     schedule: `${values.minute} ${values.hour} ${values.dayOfMonth} ${values.month} ${values.dayOfWeek}`
   }
 
-  console.log(data)
   mutate(data)
   onClose()
 })

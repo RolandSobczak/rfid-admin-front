@@ -21,8 +21,8 @@ async function fetchTenantsList() {
 
 const result = useQuery({
   queryKey: ['tenants'],
-  queryFn: fetchTenantsList,
-  enabled: auth.isAuthenticated
+  queryFn: fetchTenantsList
+  //enabled: auth.isAuthenticated
 })
 
 function resolveType(tenant_type: string): string {
