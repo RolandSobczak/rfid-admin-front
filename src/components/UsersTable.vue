@@ -19,15 +19,15 @@ async function fetchUsersList() {
   return res.data
 }
 
-const result = useQuery({
+const { isPending, data } = useQuery({
   queryKey: ['users'],
   queryFn: fetchUsersList
   // enabled: auth.isAuthenticated
 })
 
 const users = computed(() => {
-  if (!result.isPending.value) {
-    return result.data.value.map((t) => ({
+  if (!isPending.value) {
+    return data.value.map((t) => ({
       id: t.id,
       name: t.first_name + ' ' + t.last_name,
       email: t.email,
@@ -48,7 +48,10 @@ const headers = ref([
 ])
 </script>
 <template>
-  <v-data-table :headers="headers" :items="users" item-value="name" class="h-auto">
+  <v-data-table :headers="headers" :items="users" item-value="name" class="h-auto" :loading="isPending">
+    <template v-slot:loading>
+      <v-skeleton-loader type="table-row@10"></v-skeleton-loader>
+    </template>
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Organizacje</v-toolbar-title>

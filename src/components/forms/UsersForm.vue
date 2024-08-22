@@ -5,6 +5,7 @@ import { useField, useForm } from 'vee-validate'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 
 const dialog = ref(false)
+const isLoading = ref(false)
 
 function onOpen() {
   dialog.value = true
@@ -12,6 +13,7 @@ function onOpen() {
 
 function onClose() {
   dialog.value = false
+  isLoading.value = false
   handleReset()
 }
 
@@ -86,10 +88,12 @@ const { error, mutate, reset } = useMutation({
       const updatedData = oldData ? [...oldData, newUser] : [newUser]
       return updatedData
     })
+    isLoading.value = false
   }
 })
 
 const submit = handleSubmit(async (values) => {
+  isLoading.value = true
   const data = {
     first_name: values.firstName,
     last_name: values.lastName,
@@ -144,7 +148,7 @@ const submit = handleSubmit(async (values) => {
 
             <v-btn text="Cofnij" variant="plain" @click="onClose"></v-btn>
 
-            <v-btn color="primary" text="Dodaj" variant="tonal" type="submit"></v-btn>
+            <v-btn color="primary" text="Dodaj" variant="tonal" type="submit" :loading="isLoading"></v-btn>
           </v-card-actions>
         </form>
       </v-card>

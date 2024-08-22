@@ -6,6 +6,7 @@ import { useMutation, useQueryClient, useQuery } from '@tanstack/vue-query'
 
 const { userId } = defineProps<{ userId: number }>()
 const queryClient = new useQueryClient()
+const isLoading = ref(false)
 
 async function deleteUser(userId: number) {
   const res = await api.delete(`/users/${userId}`)
@@ -19,11 +20,13 @@ const { error, mutate, reset } = useMutation({
   mutationFn: deleteUser,
   onSuccess: () => {
     queryClient.setQueryData(['users'], (oldData) => oldData.filter((u) => u.id !== userId))
+    isLoading.value = false
     onClose()
   }
 })
 
 function onDelete() {
+  isLoading.value = true
   mutate(userId)
 }
 
@@ -33,6 +36,7 @@ function onOpen() {
 
 function onClose() {
   dialog.value = false
+  isLoading.value = false
 }
 </script>
 <template>

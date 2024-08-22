@@ -5,6 +5,7 @@ import { useField, useForm } from 'vee-validate'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 
 const dialog = ref(false)
+const isLoading = ref(false)
 
 function onOpen() {
   dialog.value = true
@@ -12,6 +13,7 @@ function onOpen() {
 
 function onClose() {
   dialog.value = false
+  isLoading.value = false
 }
 
 const { handleSubmit, handleReset } = useForm({
@@ -77,6 +79,7 @@ const { error, mutate, reset } = useMutation({
 })
 
 const submit = handleSubmit(async (values) => {
+  isLoading.value = true
   const data = {
     email: values.email,
     password: values.password,
@@ -98,6 +101,7 @@ const submit = handleSubmit(async (values) => {
     data.tenant.lang = 'en-EN'
   }
   mutate(data)
+  isLoading.value = false
   onClose()
 })
 </script>
@@ -154,7 +158,7 @@ const submit = handleSubmit(async (values) => {
 
             <v-btn text="Cofnij" variant="plain" @click="dialog = false"></v-btn>
 
-            <v-btn color="primary" text="Dodaj" variant="tonal" type="submit"></v-btn>
+            <v-btn color="primary" text="Dodaj" variant="tonal" type="submit" :loading="isLoading"></v-btn>
           </v-card-actions>
         </form>
       </v-card>

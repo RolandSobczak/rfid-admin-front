@@ -19,7 +19,7 @@ async function fetchTenantsList() {
   return res.data
 }
 
-const result = useQuery({
+const { data, isPending } = useQuery({
   queryKey: ['tenants'],
   queryFn: fetchTenantsList
   //enabled: auth.isAuthenticated
@@ -37,8 +37,8 @@ function resolveType(tenant_type: string): string {
 }
 
 const tenants = computed(() => {
-  if (!result.isPending.value) {
-    return result.data.value.map((t) => ({
+  if (!isPending.value) {
+    return data.value.map((t) => ({
       id: t.id,
       name: t.name,
       slug: t.slug,
@@ -60,7 +60,10 @@ const headers = ref([
 ])
 </script>
 <template>
-  <v-data-table :headers="headers" :items="tenants" item-value="name" class="h-auto">
+  <v-data-table :headers="headers" :items="tenants" item-value="name" class="h-auto" :loading="isPending">
+    <template v-slot:loading>
+      <v-skeleton-loader type="table-row@10"></v-skeleton-loader>
+    </template>
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Organizacje</v-toolbar-title>
