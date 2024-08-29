@@ -18,43 +18,18 @@ function onClose() {
 }
 
 const { handleSubmit, handleReset } = useForm({
-  /*validationSchema: {
+  validationSchema: {
     name(value) {
       if (value) return true
 
       return 'Select an item.'
     },
-    db(value) {
-      if (value) return true
+    email(value) {
+      if (/^[a-zA-Z0-9.-]+@[a-z.-]+\.[a-z]+$/i.test(value)) return true
 
-      return 'Select an item.'
-    },
-    minute(value) {
-      if (value) return true
-
-      return 'Select an item.'
-    },
-    hour(value) {
-      if (value) return true
-
-      return 'Select an item.'
-    },
-    dayOfMonth(value) {
-      if (value) return true
-
-      return 'Select an item.'
-    },
-    month(value) {
-      if (value) return true
-
-      return 'Select an item.'
-    },
-    dayOfWeek(value) {
-      if (value) return true
-
-      return 'Select an item.'
+      return 'Must be a valid e-mail.'
     }
-  }*/
+  }
 })
 const email = useField('email')
 const password = useField('password')
