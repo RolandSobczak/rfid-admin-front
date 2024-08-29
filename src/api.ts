@@ -23,7 +23,7 @@ export const setAccessToken = (token: string): void => {
 }
 
 export async function fetchNewToken(refreshToken: string) {
-  const res = await fetch(`http://192.168.1.2/auth-api/v1/users/refresh`, {
+  const res = await fetch(`${import.meta.env.VITE_AUTH_API_URL}/users/refresh`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${refreshToken}` }
   })
@@ -58,7 +58,6 @@ const loadRefreshToken = (): string => {
 }
 
 async function refresh(failedRequest: any) {
-  console.log('refresh')
 
   const refreshToken = loadRefreshToken()
   if (!refreshToken) {
@@ -74,7 +73,6 @@ async function refresh(failedRequest: any) {
   }
 
   return fetchNewToken(refreshToken).then((newToken: string) => {
-    console.log(newToken);
     failedRequest.response.config.headers.Authorization = "Bearer " + newToken;
     setAccessToken(newToken)
     return Promise.resolve()
