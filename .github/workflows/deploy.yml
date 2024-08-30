@@ -1,0 +1,43 @@
+name: ci
+
+on:
+  push:
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      - 
+        name: List files
+        run: ls ./docker/backend/Dockerfile
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: registry.rolandsobczak.com
+      -
+        name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./docker/backend/Dockerfile
+          push: true
+          args:
+            - "AUTH_API_URL=http://auth.server.local/v1"
+            - "ADMIN_API_URL=http://admin.server.local/v1"
+            - "BASE_URL=/admin/"
+          tags: |
+            registry.rolandsobczak.com/rfid-admin/rfid-admin-front:latest
+            registry.rolandsobczak.com/rfid-admin/rfid-admin-front:${{ github.sha }}
