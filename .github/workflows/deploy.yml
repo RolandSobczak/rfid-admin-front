@@ -26,7 +26,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          registry: registry.rolandsobczak.com
+          registry: ${{ vars.REGISTRY_HOST }}
       -
         name: Build and push
         uses: docker/build-push-action@v6
@@ -34,10 +34,10 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          args:
-            - "AUTH_API_URL=http://auth.server.local/v1"
-            - "ADMIN_API_URL=http://admin.server.local/v1"
-            - "BASE_URL=/admin/"
+          build-args: |
+              AUTH_API_URL=${{ vars.AUTH_API_HOST }}
+              ADMIN_API_URL=${{ vars.ADMIN_API_HOST }}
+              BASE_URL=${{ vars.BASE_URL }}
           tags: |
             registry.rolandsobczak.com/rfid-admin/rfid-admin-front:latest
             registry.rolandsobczak.com/rfid-admin/rfid-admin-front:${{ github.sha }}
