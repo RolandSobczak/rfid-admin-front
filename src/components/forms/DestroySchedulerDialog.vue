@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import api from '@/api'
 const dialog = ref(false)
+const isLoading = ref(false)
 import { useMutation, useQueryClient, useQuery } from '@tanstack/vue-query'
 
 const { scheduler_name } = defineProps<{ scheduler_name: string }>()
@@ -21,11 +22,13 @@ const { error, mutate, reset } = useMutation({
     queryClient.setQueryData(['schedulers'], (oldData) =>
       oldData.filter((t) => t.scheduler_name !== scheduler_name)
     )
+    isLoading.value = false
     onClose()
   }
 })
 
 function onDelete() {
+  isLoading.value = true
   mutate(scheduler_name)
 }
 
@@ -49,10 +52,9 @@ function onClose() {
 
         <v-card-actions>
           <v-spacer></v-spacer>
-
           <v-btn text="Cofnij" variant="plain" @click="dialog = false"></v-btn>
 
-          <v-btn color="red" text="Usun" @click="onDelete"></v-btn>
+          <v-btn color="red" text="Usuń" @click="onDelete" :loading="isLoading"></v-btn>
         </v-card-actions>
       </v-card>
       <template v-slot:activator="{ props }">

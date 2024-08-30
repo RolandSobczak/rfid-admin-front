@@ -22,6 +22,11 @@ const customRoutes = [
         component: () => import('@/pages/index.vue'),
       },
       {
+        path: 'users',
+        name: 'Users',
+        component: () => import('@/pages/users.vue'),
+      },
+      {
         path: 'logs',
         name: 'Logs',
         component: () => import('@/pages/logs.vue'),
@@ -70,7 +75,6 @@ router.beforeEach(async (to, from) => {
 router.onError((err, to) => {
   if (err?.message?.includes?.('Failed to fetch dynamically imported module')) {
     if (!localStorage.getItem('vuetify:dynamic-reload')) {
-      console.log('Reloading page to fix dynamic import error')
       localStorage.setItem('vuetify:dynamic-reload', 'true')
       location.assign(to.fullPath)
     } else {

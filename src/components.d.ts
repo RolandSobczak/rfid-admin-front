@@ -10,6 +10,7 @@ declare module 'vue' {
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     DestroySchedulerDialog: typeof import('./components/forms/DestroySchedulerDialog.vue')['default']
     DestroyTenantDialog: typeof import('./components/forms/DestroyTenantDialog.vue')['default']
+    DestroyUserDialog: typeof import('./components/forms/DestroyUserDialog.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     NewTenantDialog: typeof import('./components/forms/NewTenantDialog.vue')['default']
     RestartBackup: typeof import('./components/RestartBackup.vue')['default']
@@ -22,5 +23,7 @@ declare module 'vue' {
     TenantBackup: typeof import('./components/TenantBackup.vue')['default']
     TenantRestart: typeof import('./components/TenantRestart.vue')['default']
     TenantsTable: typeof import('./components/TenantsTable.vue')['default']
+    UsersForm: typeof import('./components/forms/UsersForm.vue')['default']
+    UsersTable: typeof import('./components/UsersTable.vue')['default']
   }
 }

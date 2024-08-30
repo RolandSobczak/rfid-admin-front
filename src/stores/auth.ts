@@ -33,7 +33,6 @@ export const useAuthStore = defineStore('currentUser', () => {
     if (!refreshToken) {
       refreshToken = sessionStorage.getItem(REFRESH_TOKEN_ADDR_KEY)
     }
-    console.log("loadRefreshToken", refreshToken);
 
     return refreshToken;
   }

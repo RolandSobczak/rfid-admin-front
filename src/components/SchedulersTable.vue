@@ -19,10 +19,10 @@ async function fetchTenantsList() {
   return res.data
 }
 
-const result = useQuery({
+const { isPending, data } = useQuery({
   queryKey: ['schedulers'],
-  queryFn: fetchTenantsList,
-  enabled: auth.isAuthenticated
+  queryFn: fetchTenantsList
+  //enabled: auth.isAuthenticated
 })
 
 function resolveType(tenant_type: string): string {
@@ -37,8 +37,8 @@ function resolveType(tenant_type: string): string {
 }
 
 const schedulers = computed(() => {
-  if (!result.isPending.value) {
-    return result.data.value.map((s) => {
+  if (!isPending.value) {
+    return data.value.map((s) => {
       const [minute, hour, day_of_month, month, day_of_week] = s.schedule.split(' ')
 
       return {
@@ -66,7 +66,10 @@ const headers = ref([
 ])
 </script>
 <template>
-  <v-data-table :headers="headers" :items="schedulers" item-value="name" class="h-auto">
+  <v-data-table :headers="headers" :items="schedulers" item-value="name" class="h-auto" :loading="isPending">
+    <template v-slot:loading>
+      <v-skeleton-loader type="table-row@10"></v-skeleton-loader>
+    </template>
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Zaplanowane akcje</v-toolbar-title>

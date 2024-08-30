@@ -23,23 +23,25 @@ async function fetchCurrentUser() {
 }
 
 async function startup() {
-  const refreshToken = auth.loadRefreshToken()
-  if (!refreshToken) {
-    await router.push({ name: 'SignIn' })
-  }
+  const currentUser = await fetchCurrentUser()
+  auth.setUserData(currentUser)
 
-  try {
-    const accessToken = await fetchNewToken(refreshToken)
-    console.log({ accessToken })
-    setAccessToken(accessToken)
+  //const refreshToken = auth.loadRefreshToken()
+  //if (!refreshToken) {
+  //  await router.push({ name: 'SignIn' })
+  //}
+
+  /*try {
+    //const accessToken = await fetchNewToken(refreshToken)
+    //setAccessToken(accessToken)
 
     const currentUser = await fetchCurrentUser()
     auth.setUserData(currentUser)
   } catch (e) {
     console.error(e)
     await router.push({ name: 'SignIn' })
-  }
+  }*/
 }
 
-onBeforeMount(startup)
+//onBeforeMount(startup)
 </script>
