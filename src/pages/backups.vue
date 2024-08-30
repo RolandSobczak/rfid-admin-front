@@ -17,8 +17,8 @@ async function fetchDbList(): Promise<string[]> {
   return res.data
 }
 
-async function fetchBackups(db: string): Promise<string[]> {
-  const res = await api.get(`/backups/${db}`)
+async function fetchBackups(): Promise<string[]> {
+  const res = await api.get(`/backups/${currentDb.value}`)
   if (res.status !== 200) {
     return Promise.reject(new Error('Oh no!'))
   }
@@ -34,26 +34,25 @@ const scrollToBottom = () => {
 
 onMounted(scrollToBottom)
 
-const result = useQuery({ queryKey: ['backup_dbs'], queryFn: fetchDbList })
+const { data, isPending } = useQuery({ queryKey: ['backup_dbs'], queryFn: fetchDbList })
+
+const { data: backups, isPending: backupsPending } = useQuery({
+  queryKey: ['backups'],
+  queryFn: fetchBackups
+})
 
 const dbs = computed(() => {
-  if (!result.isPending.value) {
-    return result.data.value
+  if (!isPending.value) {
+    return data.value
   }
   return []
 })
-
-const backups = computedAsync(async () => {
-  if (!currentDb.value) return []
-
-  return await fetchBackups(currentDb.value)
-  return []
-}, [])
 </script>
 <template>
   <v-navigation-drawer permanent>
     <v-list>
-      <v-list-item :value="db" v-for="db in dbs" :key="db" @click="() => {
+      <v-skeleton-loader type="list-item-three-line" v-if="isPending"></v-skeleton-loader>
+      <v-list-item :value="db" v-else v-for="db in dbs" :key="db" @click="() => {
           currentDb = db
         }
         ">
@@ -63,9 +62,14 @@ const backups = computedAsync(async () => {
   </v-navigation-drawer>
 
   <div class="w-100 h-100">
-    <div v-for="backup in backups" :key="backup" class="border-b-thin">
-      <p class="py-3">{{ backup }}</p>
-    </div>
+    <v-skeleton-loader type="list-item-three-line" v-if="false"></v-skeleton-loader>
+    <v-virtual-scroll max-height="90vh" height="100%" :items="backups" v-else>
+      <template v-slot:default="{ item }">
+        <div class="border-b-thin">
+          <p class="py-3">{{ item }}</p>
+        </div>
+      </template>
+    </v-virtual-scroll>
   </div>
 </template>
 
