@@ -22,7 +22,6 @@ async function fetchTenantsList() {
 const { data, isPending } = useQuery({
   queryKey: ['tenants'],
   queryFn: fetchTenantsList
-  //enabled: auth.isAuthenticated
 })
 
 function resolveType(tenant_type: string): string {
@@ -60,7 +59,7 @@ const headers = ref([
 ])
 </script>
 <template>
-  <v-data-table :headers="headers" :items="tenants" item-value="name" class="h-auto" :loading="isPending">
+  <v-data-table :headers="headers" :items="tenants" item-value="id" class="h-auto" :loading="isPending">
     <template v-slot:loading>
       <v-skeleton-loader type="table-row@10"></v-skeleton-loader>
     </template>

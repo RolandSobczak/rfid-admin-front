@@ -27,7 +27,9 @@ const { isPending, data } = useQuery({
 
 const users = computed(() => {
   if (!isPending.value) {
-    return data.value.map((t) => ({
+    const finalUsers = data.value.unique<object, number>((u) => u.id)
+
+    return finalUsers.map((t) => ({
       id: t.id,
       name: t.first_name + ' ' + t.last_name,
       email: t.email,
@@ -48,7 +50,7 @@ const headers = ref([
 ])
 </script>
 <template>
-  <v-data-table :headers="headers" :items="users" item-value="name" class="h-auto" :loading="isPending">
+  <v-data-table item-value="id" :headers="headers" :items="users" class="h-auto" :loading="isPending">
     <template v-slot:loading>
       <v-skeleton-loader type="table-row@10"></v-skeleton-loader>
     </template>
