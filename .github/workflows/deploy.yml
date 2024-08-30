@@ -11,9 +11,6 @@ jobs:
       -
         name: Checkout
         uses: actions/checkout@v4
-      - 
-        name: List files
-        run: ls ./docker/backend/Dockerfile
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v3
