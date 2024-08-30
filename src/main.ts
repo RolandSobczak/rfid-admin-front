@@ -36,6 +36,20 @@ Array.prototype.equals = function(array) {
   }
   return true;
 }
+
+Array.prototype.unique = function <T, K>(this: T[], callback: (e: T) => K) {
+  const check: K[] = []
+
+  return this.filter(e => {
+    const objId = callback(e)
+    const existingId = check.indexOf(objId)
+    if (existingId !== -1) return false
+
+    check.push(objId)
+    return true
+  })
+}
+
 Object.defineProperty(Array.prototype, "equals", { enumerable: false });
 
 const app = createApp(App)
