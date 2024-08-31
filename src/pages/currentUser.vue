@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
 import { authAPI } from '@/api'
 import router from '@/router'
+import SignOut from '@/components/SignOut'
 
 async function fetchCurrentUser() {
   const res = await authAPI.get('/users/current-user')
@@ -27,8 +28,6 @@ const initials = computed(() => {
   if (isPending.value) return ''
   return user.value.first_name[0] + user.value.last_name[0]
 })
-
-function logout() { }
 </script>
 <template>
   <v-card class="mx-auto flex-column d-flex justify-center align-center py-6" min-width="400" max-width="600">
@@ -40,6 +39,6 @@ function logout() { }
         <p class="mt-2">{{ name }}</p>
       </div>
     </v-card-title>
-    <v-btn append-icon="mdi-exit-run" variant="outlined"> Wylgouj </v-btn>
+    <SignOut />
   </v-card>
 </template>

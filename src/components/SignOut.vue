@@ -25,9 +25,7 @@ async function signOut() {
 <template>
   <v-dialog max-width="500" v-model="dialog">
     <template v-slot:activator>
-      <div @click="onOpen">
-        <v-icon color="white" icon="mdi-account" size="large"></v-icon>
-      </div>
+      <v-btn append-icon="mdi-exit-run" variant="outlined" @click="onOpen"> Wylgouj </v-btn>
     </template>
 
     <template v-slot:default>
