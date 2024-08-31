@@ -17,8 +17,8 @@ async function fetchDbList(): Promise<string[]> {
   return res.data
 }
 
-async function fetchBackups(db: string): Promise<string[]> {
-  const res = await api.get(`/backups/${db}`)
+async function fetchBackups(): Promise<string[]> {
+  const res = await api.get(`/backups/${currentDb.value}`)
   if (res.status !== 200) {
     return Promise.reject(new Error('Oh no!'))
   }
@@ -34,26 +34,25 @@ const scrollToBottom = () => {
 
 onMounted(scrollToBottom)
 
-const result = useQuery({ queryKey: ['backup_dbs'], queryFn: fetchDbList })
+const { data, isPending } = useQuery({ queryKey: ['backup_dbs'], queryFn: fetchDbList })
+
+const { data: backups, isPending: backupsPending } = useQuery({
+  queryKey: ['backups', currentDb],
+  queryFn: fetchBackups
+})
 
 const dbs = computed(() => {
-  if (!result.isPending.value) {
-    return result.data.value
+  if (!isPending.value) {
+    return data.value
   }
   return []
 })
-
-const backups = computedAsync(async () => {
-  if (!currentDb.value) return []
-
-  return await fetchBackups(currentDb.value)
-  return []
-}, [])
 </script>
 <template>
-  <v-navigation-drawer permanent>
+  <v-navigation-drawer>
     <v-list>
-      <v-list-item :value="db" v-for="db in dbs" :key="db" @click="() => {
+      <v-skeleton-loader type="list-item-three-line" v-if="isPending"></v-skeleton-loader>
+      <v-list-item :value="db" v-else v-for="db in dbs" :key="db" @click="() => {
           currentDb = db
         }
         ">
@@ -63,10 +62,38 @@ const backups = computedAsync(async () => {
   </v-navigation-drawer>
 
   <div class="w-100 h-100">
-    <div v-for="backup in backups" :key="backup" class="border-b-thin">
-      <p class="py-3">{{ backup }}</p>
-    </div>
+    <v-card class="mx-auto w-100 h-100" max-height="100vh" :loading="false">
+      <template v-if="backupsPending">
+        <v-skeleton-loader type="list-item-two-line"></v-skeleton-loader>
+      </template>
+      <v-card-title class="ma-0 pa-0" :style="{ height: '3.9rem' }" v-if="!backupsPending">
+        <div class="d-flex align-center h-100">
+          <p class="pl-3">Dostępne kopie zapasowe</p>
+        </div>
+      </v-card-title>
+      <v-divider></v-divider>
+      <template v-if="!backupsPending">
+        <v-virtual-scroll class="pb-6" max-height="100vh" height="100%" :items="backups">
+          <template v-slot:default="{ item }">
+            <div class="border-b-thin">
+              <p class="pl-3 py-3">{{ item }}</p>
+            </div>
+          </template>
+        </v-virtual-scroll>
+      </template>
+      <template v-else>
+        <v-list>
+          <v-list-item>
+            <v-skeleton-loader type="list-item"></v-skeleton-loader>
+          </v-list-item>
+          <v-list-item>
+            <v-skeleton-loader type="list-item"></v-skeleton-loader>
+          </v-list-item>
+          <v-list-item>
+            <v-skeleton-loader type="list-item"></v-skeleton-loader>
+          </v-list-item>
+        </v-list>
+      </template>
+    </v-card>
   </div>
 </template>
-
-<style scoped></style>

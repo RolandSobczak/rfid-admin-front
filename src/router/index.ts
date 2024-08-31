@@ -41,6 +41,11 @@ const customRoutes = [
         name: 'Schedulers',
         component: () => import('@/pages/schedulers.vue'),
       },
+      {
+        path: 'current-user',
+        name: 'CurrentUser',
+        component: () => import('@/pages/currentUser.vue'),
+      },
     ],
   },
   {

@@ -120,6 +120,7 @@ const { error, mutate, reset } = useMutation({
       const updatedData = oldData ? [...oldData, newTenant] : [newTenant]
       return updatedData
     })
+    onClose()
   }
 })
 
@@ -147,7 +148,6 @@ const submit = handleSubmit(async (values) => {
   }
   mutate(data)
   isLoading.value = false
-  onClose()
 })
 </script>
 <template>
