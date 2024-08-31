@@ -33,10 +33,10 @@ async function onNavigate(name: string) {
 }
 </script>
 <template>
-  <v-app :theme="theme">
+  <v-app :theme="theme" max-height="100vh" :style="{ overflow: 'hidden' }">
     <v-layout class="rounded rounded-md">
       <v-navigation-drawer expand-on-hover rail>
-        <div class="d-flex flex-column justify-center h-100">
+        <div class="d-flex flex-column justify-center h-100" :style="{ overflow: 'hidden' }">
           <HeaderCard />
           <v-list class="flex-grow-1">
             <v-list-item prepend-icon="mdi-domain" title="Organizacje" value="tenants" @click="async () => {
