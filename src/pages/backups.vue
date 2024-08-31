@@ -62,20 +62,36 @@ const dbs = computed(() => {
   </v-navigation-drawer>
 
   <div class="w-100 h-100">
-    <v-skeleton-loader type="list-item-two-line" v-if="backupsPending"></v-skeleton-loader>
-
-    <v-card class="mx-auto w-100" v-else>
-      <v-card-title :style="{ height: '3.9rem' }"> Dostępne kopie zapasowe </v-card-title>
-
+    <v-card class="mx-auto w-100 h-100" :loading="false">
+      <template v-if="backupsPending">
+        <v-skeleton-loader type="list-item-two-line"></v-skeleton-loader>
+      </template>
+      <v-card-title :style="{ height: '3.9rem' }" v-if="!backupsPending">
+        Dostępne kopie zapasowe
+      </v-card-title>
       <v-divider></v-divider>
-
-      <v-virtual-scroll max-height="100vh" height="100%" :items="backups">
-        <template v-slot:default="{ item }">
-          <div class="border-b-thin">
-            <p class="pl-3 py-3">{{ item }}</p>
-          </div>
-        </template>
-      </v-virtual-scroll>
+      <template v-if="!backupsPending">
+        <v-virtual-scroll max-height="100vh" height="100%" :items="backups">
+          <template v-slot:default="{ item }">
+            <div class="border-b-thin">
+              <p class="pl-3 py-3">{{ item }}</p>
+            </div>
+          </template>
+        </v-virtual-scroll>
+      </template>
+      <template v-else>
+        <v-list>
+          <v-list-item>
+            <v-skeleton-loader type="list-item"></v-skeleton-loader>
+          </v-list-item>
+          <v-list-item>
+            <v-skeleton-loader type="list-item"></v-skeleton-loader>
+          </v-list-item>
+          <v-list-item>
+            <v-skeleton-loader type="list-item"></v-skeleton-loader>
+          </v-list-item>
+        </v-list>
+      </template>
     </v-card>
   </div>
 </template>
