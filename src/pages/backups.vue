@@ -49,7 +49,7 @@ const dbs = computed(() => {
 })
 </script>
 <template>
-  <v-navigation-drawer permanent>
+  <v-navigation-drawer>
     <v-list>
       <v-skeleton-loader type="list-item-three-line" v-if="isPending"></v-skeleton-loader>
       <v-list-item :value="db" v-else v-for="db in dbs" :key="db" @click="() => {
@@ -62,15 +62,20 @@ const dbs = computed(() => {
   </v-navigation-drawer>
 
   <div class="w-100 h-100">
-    <v-skeleton-loader type="list-item-three-line" v-if="false"></v-skeleton-loader>
-    <v-virtual-scroll max-height="90vh" height="100%" :items="backups" v-else>
-      <template v-slot:default="{ item }">
-        <div class="border-b-thin">
-          <p class="py-3">{{ item }}</p>
-        </div>
-      </template>
-    </v-virtual-scroll>
+    <v-skeleton-loader type="list-item-two-line" v-if="backupsPending"></v-skeleton-loader>
+
+    <v-card class="mx-auto w-100" v-else>
+      <v-card-title :style="{ height: '3.9rem' }"> Dostępne kopie zapasowe </v-card-title>
+
+      <v-divider></v-divider>
+
+      <v-virtual-scroll max-height="100vh" height="100%" :items="backups">
+        <template v-slot:default="{ item }">
+          <div class="border-b-thin">
+            <p class="pl-3 py-3">{{ item }}</p>
+          </div>
+        </template>
+      </v-virtual-scroll>
+    </v-card>
   </div>
 </template>
-
-<style scoped></style>

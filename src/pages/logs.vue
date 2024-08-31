@@ -55,10 +55,10 @@ onMounted(fetchLogs)
   <v-navigation-drawer permanent>
     <v-list class="h-100">
       <v-list-item :value="tenant.name" v-for="tenant in tenants" :key="tenant.name" @click="() => {
-          logData = null
-          currentLog = tenant.name
-          fetchLogs()
-        }
+        logData = null
+        currentLog = tenant.name
+        fetchLogs()
+      }
         " v-if="!isPending">
         <div>
           <div class="d-flex align-center justify-space-between">
@@ -87,7 +87,7 @@ onMounted(fetchLogs)
 .main-content {
   display: flex;
   flex-direction: column;
-  height: 93.5vh;
+  height: 100vh;
   /* Full viewport height */
   width: 100%;
   /* Full width */
