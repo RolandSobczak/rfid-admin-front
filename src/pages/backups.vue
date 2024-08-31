@@ -37,7 +37,7 @@ onMounted(scrollToBottom)
 const { data, isPending } = useQuery({ queryKey: ['backup_dbs'], queryFn: fetchDbList })
 
 const { data: backups, isPending: backupsPending } = useQuery({
-  queryKey: ['backups'],
+  queryKey: ['backups', currentDb],
   queryFn: fetchBackups
 })
 
@@ -62,16 +62,18 @@ const dbs = computed(() => {
   </v-navigation-drawer>
 
   <div class="w-100 h-100">
-    <v-card class="mx-auto w-100 h-100" :loading="false">
+    <v-card class="mx-auto w-100 h-100" max-height="100vh" :loading="false">
       <template v-if="backupsPending">
         <v-skeleton-loader type="list-item-two-line"></v-skeleton-loader>
       </template>
-      <v-card-title :style="{ height: '3.9rem' }" v-if="!backupsPending">
-        Dostępne kopie zapasowe
+      <v-card-title class="ma-0 pa-0" :style="{ height: '3.9rem' }" v-if="!backupsPending">
+        <div class="d-flex align-center h-100">
+          <p class="pl-3">Dostępne kopie zapasowe</p>
+        </div>
       </v-card-title>
       <v-divider></v-divider>
       <template v-if="!backupsPending">
-        <v-virtual-scroll max-height="100vh" height="100%" :items="backups">
+        <v-virtual-scroll class="pb-6" max-height="100vh" height="100%" :items="backups">
           <template v-slot:default="{ item }">
             <div class="border-b-thin">
               <p class="pl-3 py-3">{{ item }}</p>
