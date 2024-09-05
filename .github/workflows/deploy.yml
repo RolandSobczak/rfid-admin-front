@@ -38,5 +38,5 @@ jobs:
               ADMIN_API_URL=${{ vars.ADMIN_API_HOST }}
               BASE_URL=${{ vars.BASE_URL }}
           tags: |
-            ${{ vars.REGISTRY_HOST }}/rfid-admin/rfid-admin-front:latest
-            ${{ vars.REGISTRY_HOST }}/rfid-admin/rfid-admin-front:${{ github.sha }}
+            ${{ vars.DOCKER_REPO }}/rfid-admin-front:latest
+            ${{ vars.DOCKER_REPO }}/rfid-admin-front:${{ github.sha }}
