@@ -82,7 +82,6 @@ function onOpen() {
 function onClose() {
   handleReset()
   dialog.value = false
-  isLoading.value = false
 }
 
 function apiErrorHandler(e) {
@@ -121,6 +120,9 @@ const { error, mutate, reset } = useMutation({
       return updatedData
     })
     onClose()
+  },
+  onSettled: () => {
+    isLoading.value = false
   }
 })
 
@@ -146,8 +148,8 @@ const submit = handleSubmit(async (values) => {
   } else if (values.lang === 'Angielski') {
     data.tenant.lang = 'en-EN'
   }
+
   mutate(data)
-  isLoading.value = false
 })
 </script>
 <template>

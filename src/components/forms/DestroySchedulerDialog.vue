@@ -22,8 +22,10 @@ const { error, mutate, reset } = useMutation({
     queryClient.setQueryData(['schedulers'], (oldData) =>
       oldData.filter((t) => t.scheduler_name !== scheduler_name)
     )
-    isLoading.value = false
     onClose()
+  },
+  onSettled: () => {
+    isLoading.value = false
   }
 })
 

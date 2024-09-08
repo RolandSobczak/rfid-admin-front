@@ -13,7 +13,6 @@ function onOpen() {
 
 function onClose() {
   dialog.value = false
-  isLoading.value = false
   handleReset()
 }
 

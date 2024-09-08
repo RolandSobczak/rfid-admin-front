@@ -20,8 +20,10 @@ const { error, mutate, reset } = useMutation({
   mutationFn: deleteUser,
   onSuccess: () => {
     queryClient.setQueryData(['users'], (oldData) => oldData.filter((u) => u.id !== userId))
-    isLoading.value = false
     onClose()
+  },
+  onSettled: () => {
+    isLoading.value = false
   }
 })
 
@@ -54,7 +56,7 @@ function onClose() {
 
           <v-btn text="Cofnij" variant="plain" @click="onClose"></v-btn>
 
-          <v-btn color="red" text="Usuń" @click="onDelete"></v-btn>
+          <v-btn color="red" text="Usuń" @click="onDelete" :loading="isLoading"></v-btn>
         </v-card-actions>
       </v-card>
       <template v-slot:activator="{ props }">

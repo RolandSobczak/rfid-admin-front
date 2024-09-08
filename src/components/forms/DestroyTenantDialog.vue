@@ -6,7 +6,7 @@ import { useMutation, useQueryClient, useQuery } from '@tanstack/vue-query'
 
 const { tenant_id } = defineProps<{ tenant_id: number }>()
 const queryClient = new useQueryClient()
-const isLoading = ref(false)
+const isLoading = ref<boolean>(false)
 
 async function deleteTenant(tenant_id: number) {
   const res = await api.delete(`/tenants/${tenant_id}`)
@@ -20,8 +20,10 @@ const { error, mutate, reset } = useMutation({
   mutationFn: deleteTenant,
   onSuccess: () => {
     queryClient.setQueryData(['tenants'], (oldData) => oldData.filter((t) => t.id !== tenant_id))
-    isLoading.value = false
     onClose()
+  },
+  onSettled: () => {
+    isLoading.value = false
   }
 })
 
@@ -50,14 +52,12 @@ function onClose() {
 
         <v-card-actions>
           <v-spacer></v-spacer>
-
           <v-btn text="Cofnij" variant="plain" @click="dialog = false"></v-btn>
-
-          <v-btn color="red" text="Usuń" @click="onDelete"></v-btn>
+          <v-btn color="red" text="Usuń" @click="onDelete" :loading="isLoading"></v-btn>
         </v-card-actions>
       </v-card>
       <template v-slot:activator="{ props }">
-        <v-icon size="small" @click="onOpen" :loading="isLoading"> mdi-delete </v-icon>
+        <v-icon size="small" @click="onOpen"> mdi-delete </v-icon>
       </template>
     </v-dialog>
   </div>
