@@ -4,8 +4,8 @@ import api from '@/api'
 import { useField, useForm } from 'vee-validate'
 import { useMutation, useQueryClient, useQuery } from '@tanstack/vue-query'
 
-const dialog = ref(false)
-const isLoading = ref(false)
+const dialog = ref<boolean>(false)
+const isLoading = ref<boolean>(false)
 
 function onOpen() {
   dialog.value = true
@@ -90,7 +90,15 @@ function apiErrorHandler(e) {
     const data = e.response.data
     data.detail.forEach((f) => {
       if (f.loc.equals(['body', 'scheduler_name'])) {
-        name.setErrors(['Nazwa akcji musi być unikatowa.'])
+        if (f.type === 'string_pattern_mismatch') {
+          name.setErrors([
+            'Nazwa akcji musi być poprawną nazwą dns. (Małe litery i cyfry, wyrazy rozdzielony myślnikami)'
+          ])
+        } else if (f.msg === 'Value error, Scheduler with provided name already exists.') {
+          name.setErrors(['Nazwa akcji musi być unikatowa.'])
+        } else {
+          name.setErrors(['Nieznany błąd walidacji'])
+        }
       }
     })
   }
@@ -114,6 +122,9 @@ const { error, mutate, reset } = useMutation({
       return updatedData
     })
     onClose()
+  },
+  onSettled: () => {
+    isLoading.value = false
   }
 })
 
@@ -126,7 +137,6 @@ const submit = handleSubmit(async (values) => {
   }
 
   mutate(data)
-  isLoading.value = false
 })
 </script>
 <template>
